@@ -14,13 +14,17 @@
 InstallFolder   = 'C:\Users\u0088756\Documents\Phd\software\TrackingSim_Simtk';     % Installation folder (everything is relative to this path)
 ExampleFolder   = fullfile(InstallFolder,'Data\ExampleSubtalar');                   % folder with example data
 S.ModelFile     = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % OpenSim Model (.osim)
-S.IK_File       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % inverse kinematics solution (.mot)
-S.GRFFile       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % ground reaction forces (.mot)
-S.trcFile       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % marker coordinates (.trc)
-S.ID_File       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % inverse dynamics solution(.sto)
+S.IK_File       = fullfile(ExampleFolder,'KS.mot');                % inverse kinematics solution (.mot)
+S.GRFFile       = fullfile(ExampleFolder,'GRF_data.mot');                % ground reaction forces (.mot)
+S.trcFile       = fullfile(ExampleFolder,'MarkerFile.trc');                % marker coordinates (.trc)
+S.ID_File       = fullfile(ExampleFolder,'InverseDynamics.sto');                % inverse dynamics solution(.sto)
 S.OutPath       = fullfile(ExampleFolder,'TrackingResults');                        % folder with output
 
-S.ifPause       = 1;                                                                % (1) codes ask to run MPI programs
+S.ifPause       = 0;                                                                % (1) codes ask to run MPI programs
+
+% Flow control
+S.Run_GuessTracking     = 0;
+S.Run_Tracking         = 1;
 
 %% 1) Run first version of tracking simulation         (TrackingSimulation)
 
@@ -34,15 +38,15 @@ if S.Run_GuessTracking
     addpath(genpath(fullfile(InstallFolder,'Data','ModelTemplates')));
     
     OutName='Opt_Guess_subtalar';
-    disp(' Open Models in command line as administrator and hit ENTER when finished');
-    disp([' cd ' MPI_path]);
-    disp(' mpiexec -np 2 opensimMPI_muscle.exe LeftSideModel.osim RightSideModel.osim');
     
     if S.ifPause
-        pause();        
+        disp(' Open Models in command line as administrator and hit ENTER when finished');
+        disp([' cd ' MPI_path]);
+        disp(' mpiexec -np 2 opensimMPI_muscle.exe LeftSideModel.osim RightSideModel.osim');
+        pause();
     end
     
-    [output] = TrackingSim_ID_ImprovedContact_Subtalar(S,MainPath,MPI_path,OutName);   
+    [output] = TrackingSim_ID_ImprovedContact_Subtalar(S,MPI_path,OutName);
     close all;
 end
 
@@ -50,29 +54,36 @@ end
 
 % refine the collocation mesh based on the previous solution
 
-if S.Run_Tracking
-    MPI_path=fullfile(MainPath,'Executables\opensimmpi_muscle\build2\Release');
-    MexPath=fullfile(MainPath,'Software','MexFiles');   addpath(genpath(MexPath));
-    addpath(genpath(fullfile(MainPath,'Software','TrackingSimulation')));
-    disp(' Open Models in command line as administrator and hit ENTER when finished');
-    disp([' cd ' MPI_path]);
-    disp(' mpiexec -np 12 opensimMPI_muscle.exe LeftSideModel.osim RightSideModel.osim');
+
+
+if S.Run_Tracking        
+    % settings for the mesh refinment
+    S.nMeshIt               = 0;
+    S.meshTolerance         = 1e-6;
+    S.NMeshPoints           = 60;
+    S.NCollit               = 7;
+    S.damping               =   5;
+        
+    % path information
+    MPI_path=fullfile(InstallFolder,'Optimization','SolveID_OpenMPI');
+    MexPath=fullfile(InstallFolder,'Optimization','Mex');   addpath(genpath(MexPath));
+    addpath(genpath(InstallFolder));
+    addpath(genpath(fullfile(InstallFolder,'Data','ModelTemplates')));
+    
     if S.ifPause
-        %pause();
-        S.ifPause_copy=S.ifPause;		S.ifPause=0;	% models switch automatically
+        disp(' Open Models in command line as administrator and hit ENTER when finished');
+        disp([' cd ' MPI_path]);
+        disp(' mpiexec -np 12 opensimMPI_muscle.exe LeftSideModel.osim RightSideModel.osim');
+        pause();
     end
-    for s=S.sVect
-        S.SubjName          = PathInfo.SubjNames{s};
-        S.OutFolderName     = PathInfo.SubjNames{s};
-        S.SubjNumber        = s;
-        InName='Opt_Guess_subtalar';
-        ContactProp.K=5;
-        ContactProp.c=1;
-        ContactProp.vt=0.1;
-        ContactProp.u=1;
-        OutName='TrackingSim_subtalar';
-        ImproveMesh_TempPelvis_Contact_interpolate_subtalar(S,MainPath,MPI_path,InName,OutName,ContactProp);
-    end
+    
+    InName='Opt_Guess_subtalar';
+    ContactProp.K=5;                % Stiffness Contact model
+    ContactProp.c=1;                % scale for friction foces
+    ContactProp.vt=0.1;             % damping
+    ContactProp.u=1;                % ? [look this one up]
+    OutName='TrackingSim_subtalar';
+    ImproveMesh_subtalar(S,MPI_path,InName,OutName,ContactProp);
 end
 
 

@@ -14,14 +14,17 @@
 InstallFolder   = 'C:\Users\u0088756\Documents\Phd\software\TrackingSim_Simtk';     % Installation folder (everything is relative to this path)
 ExampleFolder   = fullfile(InstallFolder,'Data\ExampleSubtalar');                   % folder with example data
 S.ModelFile     = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % OpenSim Model (.osim)
-S.IK_File       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % inverse kinematics solution (.mot)
-S.GRFFile       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % ground reaction forces (.mot)
-S.trcFile       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % marker coordinates (.trc)
-S.ID_File       = fullfile(ExampleFolder,'OsimModel_subtalar.osim');                % inverse dynamics solution(.sto)
+S.IK_File       = fullfile(ExampleFolder,'KS.mot');                % inverse kinematics solution (.mot)
+S.GRFFile       = fullfile(ExampleFolder,'GRF_data.mot');                % ground reaction forces (.mot)
+S.trcFile       = fullfile(ExampleFolder,'MarkerFile.trc');                % marker coordinates (.trc)
+S.ID_File       = fullfile(ExampleFolder,'InverseDynamics.sto');                % inverse dynamics solution(.sto)
 S.OutPath       = fullfile(ExampleFolder,'TrackingResults');                        % folder with output
 
-S.ifPause       = 1;                                                                % (1) codes ask for
+S.ifPause       = 0;                                                                % (1) codes ask to run MPI programs
 
+% Flow control
+S.Run_GuessTracking = 1;
+ S.Run_Tracking
 %% 1) Run first version of tracking simulation         (TrackingSimulation)
 
 % based on Lorenzo Pitto & Maarten Afschrift their code to convert the .osim model to a left and
@@ -39,18 +42,10 @@ if S.Run_GuessTracking
     disp(' mpiexec -np 2 opensimMPI_muscle.exe LeftSideModel.osim RightSideModel.osim');
     
     if S.ifPause
-        pause();
-        S.ifPause_copy=S.ifPause;		S.ifPause=0;	% models switch automatically
+        pause();        
     end
     
-    for s=S.sVect
-        S.SubjName          = PathInfo.SubjNames{s};
-        S.OutFolderName     = PathInfo.SubjNames{s};
-        S.SubjNumber        = s;
-        [output] = TrackingSim_ID_ImprovedContact_Subtalar(S,MainPath,MPI_path,OutName);
-        close all;
-    end
-    S.ifPause=S.ifPause_copy;
+    [output] = TrackingSim_ID_ImprovedContact_Subtalar(S,MPI_path,OutName);   
     close all;
 end
 
