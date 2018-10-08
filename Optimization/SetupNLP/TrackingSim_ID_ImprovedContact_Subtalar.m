@@ -23,12 +23,10 @@ trcFile     = S.trcFile;
 ID_File     = S.ID_File;
 
 % Check if we are still tracking the correct ID resutls !!
-%% Translate to italian (Lorenzo Pitto his code)
 if ~isdir(OutPath); mkdir(OutPath); end
 LeftModelName=[OutPath,'\LeftSideModel.osim'];
 RightModelName=[OutPath,'\RightSideModel.osim'];
 
-SINGLEDOUBLE='d';
 %% compiles the mex files
 
 %% split model

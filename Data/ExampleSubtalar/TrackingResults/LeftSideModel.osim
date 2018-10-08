@@ -332,7 +332,7 @@
 										<!--Flag indicating whether or not the values of the coordinates should be limited to the range, above.-->
 										<clamped>true</clamped>
 										<!--Flag indicating whether or not the values of the coordinates should be constrained to the current (e.g. default) value, above.-->
-										<locked>false</locked>
+										<locked>true</locked>
 										<!--If specified, the coordinate can be prescribed by a function of time. It can be any OpenSim Function with valid second order derivatives.-->
 										<prescribed_function />
 										<!--Flag indicating whether or not the values of the coordinates should be prescribed according to the function above. It is ignored if the no prescribed function is specified.-->
@@ -3681,7 +3681,7 @@
 									<coordinate>knee_angle_l</coordinate>
 								</ConditionalPathPoint>
 								<MovingPathPoint name="rect_fem_l-P3">
-									<location> 0.0635859 0.0216052 -0.00144145</location>
+									<location> 0.0574963 0.0230077 -0.00144145</location>
 									<body>tibia_l</body>
 									<x_location>
 										<MultiplierFunction>
@@ -3807,7 +3807,7 @@
 									<coordinate>knee_angle_l</coordinate>
 								</ConditionalPathPoint>
 								<MovingPathPoint name="vas_med_l-P5">
-									<location> 0.0576152 0.0224368 0.0150322</location>
+									<location> 0.051469 0.0231259 0.0150322</location>
 									<body>tibia_l</body>
 									<x_location>
 										<MultiplierFunction>
@@ -3927,7 +3927,7 @@
 									<coordinate>knee_angle_l</coordinate>
 								</ConditionalPathPoint>
 								<MovingPathPoint name="vas_int_l-P4">
-									<location> 0.0635859 0.0216052 -0.00144145</location>
+									<location> 0.0574963 0.0230077 -0.00144145</location>
 									<body>tibia_l</body>
 									<x_location>
 										<MultiplierFunction>
@@ -4053,7 +4053,7 @@
 									<coordinate>knee_angle_l</coordinate>
 								</ConditionalPathPoint>
 								<MovingPathPoint name="vas_lat_l-P5">
-									<location> 0.0617306 0.0201662 -0.0169885</location>
+									<location> 0.0558246 0.0213595 -0.0169885</location>
 									<body>tibia_l</body>
 									<x_location>
 										<MultiplierFunction>

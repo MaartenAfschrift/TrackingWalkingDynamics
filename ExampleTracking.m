@@ -19,7 +19,7 @@ S.GRFFile       = fullfile(ExampleFolder,'GRF_data.mot');                % groun
 S.trcFile       = fullfile(ExampleFolder,'MarkerFile.trc');                % marker coordinates (.trc)
 S.ID_File       = fullfile(ExampleFolder,'InverseDynamics.sto');                % inverse dynamics solution(.sto)
 S.OutPath       = fullfile(ExampleFolder,'TrackingResults');                        % folder with output
-
+S.InstallFolder = InstallFolder;
 S.ifPause       = 0;                                                                % (1) codes ask to run MPI programs
 
 % Flow control
@@ -54,15 +54,13 @@ end
 
 % refine the collocation mesh based on the previous solution
 
-
-
 if S.Run_Tracking        
     % settings for the mesh refinment
     S.nMeshIt               = 0;
     S.meshTolerance         = 1e-6;
     S.NMeshPoints           = 60;
     S.NCollit               = 7;
-    S.damping               =   5;
+    S.damping               = 5;
         
     % path information
     MPI_path=fullfile(InstallFolder,'Optimization','SolveID_OpenMPI');
@@ -85,6 +83,46 @@ if S.Run_Tracking
     OutName='TrackingSim_subtalar';
     ImproveMesh_subtalar(S,MPI_path,InName,OutName,ContactProp);
 end
+
+
+
+%% 4) Compute Moment arms functions                 (FitMuscleFunctions)
+
+% Describe muscle geometry using polynomials (needed for forward interation, not necessary for tracking simulation)
+
+if S.Run_ComputeMomentArms
+    addpath(genpath(fullfile(MainPath,'Software','FitMuscleFunctions')));
+    for s=S.sVect
+        S.SubjName          = PathInfo.SubjNames{s};
+        S.OutFolderName     = PathInfo.SubjNames{s};
+        S.SubjNumber        = s;
+        S.do_muscle_analysis=1;
+        GetMusclePolynomials_subtalar(S);           % polynomial fitting
+        MuscleFunctions_Left_subtalar(S);           % export symbolic equations
+        MuscleFunctions_Right_subtalar(S);          % export symbolic equations
+    end
+end
+
+
+%% 5) Solve muscle redundancy                       (SolveMuscleRedundancy)
+if S.Run_SolveMuscleRedundancy
+    MatlabData          = fullfile(MainPath,'Data');
+    Adigator_Run        = 'C:\Users\u0088756\Documents\documenten\software\adigator\startupadigator.m';
+    if S.RunAdigator
+        Adigator_Run        = 'C:\Users\u0088756\Documents\documenten\software\adigator\startupadigator.m';
+        run(Adigator_Run);
+    end
+    addpath(genpath(fullfile(MainPath,'Software','SolveMuscleRedundancy')));
+    for s=S.sVect
+        S.SubjName          = PathInfo.SubjNames{s};
+        S.OutFolderName     = PathInfo.SubjNames{s};
+        S.SubjNumber        = s;
+        TrackingResults='TrackingSim_subtalar';
+        MuscleRedundancy_EMG_LimitForceDamped_subtalar(S,MainPath,MatlabData,TrackingResults);
+    end
+end
+
+
 
 
 

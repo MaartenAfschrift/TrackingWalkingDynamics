@@ -1,0 +1,18 @@
+Constructing tool from setup file C:\Users\u0088756\Documents\documenten\software\SoftwareProjects\DC_TrackingSimulation\Software\SolveMuscleRedundancy\RedundancySolver\MuscleModel\ReadFromModel\settings_Muscle_analysis.xml.
+
+AbstractTool dummy_motion loading model 'C:\Users\u0088756\Documents\documenten\software\SoftwareProjects\DC_TrackingSimulation\Data\Patient2\SimResults\LeftSideModel.osim'
+Loaded model Model_Left_Side from file C:\Users\u0088756\Documents\documenten\software\SoftwareProjects\DC_TrackingSimulation\Data\Patient2\SimResults\LeftSideModel.osim
+-----------------------------------------------------------------------
+Loaded library
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+
+No external loads will be applied (external loads file not specified).
+
+Loading coordinates from file C:\Users\u0088756\Documents\documenten\software\SoftwareProjects\DC_TrackingSimulation\Data\FitMuscleFunctions\subtalar\dummy_motion_LeftSubtalar.mot.
+Old version storage/motion file encountered
+Storage: file=C:\Users\u0088756\Documents\documenten\software\SoftwareProjects\DC_TrackingSimulation\Data\FitMuscleFunctions\subtalar\dummy_motion_LeftSubtalar.mot (nr=5000 nc=17)
+.. assuming rotations in Degrees.
+Found 5000 state vectors with time stamps ranging from 0.01 to 50.
+Executing the analyses from 0.01 to 50...
+MuscleAnalysis: WARNING - coordinate mtp_angle_l is locked and can't be varied.
