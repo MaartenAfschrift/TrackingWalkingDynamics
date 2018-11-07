@@ -1,0 +1,2 @@
+You can build the OpenSimMPI_muscle executable using cmake to create cpp project and then build the project in visual studio.
+(CMakeLists should contain all the information to build the project using cmake)

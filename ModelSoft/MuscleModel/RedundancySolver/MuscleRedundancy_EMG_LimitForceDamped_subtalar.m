@@ -383,14 +383,6 @@ if S.RightModel
     [output] = SolveMRed_Function_Va_EMG_Damped(DatStore,Misc,OptRes,bool_CreateAdigatorFiles);
     %     save(fullfile(OutPath,'Results_MuscleRedundancyRightModel_vA_EMG.mat'),'output','DatStore','Misc','OptRes');
     save(fullfile(OutPath,[OutName ExtName 'RightModel_vA_EMG_damped.mat']),'output','DatStore','Misc','OptRes');
-    %
-    
-    %     A=output.result.solution.phase.state(:,DatStore.IndsMuscle);
-    %     figure();   subplot(1,2,1);
-    %     plot(output.result.solution.phase.time,A,'k');    hold on;
-    %     plot(time,GMR_int.*output.result.solution.parameter,'--r','LineWidth',2);
-    %     subplot(1,2,2);
-    %     plot(output.result.solution.phase.control(:,25:29)*150);
     clear DatStore Misc OptRes
     
     
