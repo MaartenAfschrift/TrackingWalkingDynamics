@@ -1,5 +1,7 @@
 # Tracking simulation
 
+Note: I'm currently cleaning-up the code, and evaluating if all the steps (e.g. the OpenMPI,...) are really needed.
+
 Tracking simulation software used in publication:
 
 Afschrift et al.; Modulation of gluteus medius activity reflects the potential of the muscle to meet the mechanical demands during perturbed walking, Scientific Reports 2018
@@ -17,7 +19,7 @@ Required programs:
 
 ### Install OpenMPI program:
 
-MPI was used to parralize the simulation of the skeletal dynamics (i.e. decrease total time simulation). The state at the different collocation points are distributed between multiple cores to solve inverse dynamics.
+MPI was used in the simulation of the skeletal dynamics. The state at the different collocation points are distributed between multiple cores to solve inverse dynamics.
 
 *  compile Control_Tracking.cpp as a mex file, this files communicates between cpp and matlab:
   * Matlab command: compilamex(pwd,'Control_Tracking.cpp','C:\OpenSim33');
